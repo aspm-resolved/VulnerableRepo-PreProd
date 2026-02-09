@@ -1,32 +1,43 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
-name: My workflow
+name: My Build Workflow
+
 on:
   push:
-    branches: 
-      - "**" 
+    branches:
+      - "**"
   workflow_dispatch:
+
 permissions:
   scm-token-own: read
   scm-token-org: read
-  id-token: write  
+  id-token: write
+
 jobs:
   build:
     steps:
       - name: Get source code
         uses: cloudbees-io/checkout@v1
+
       - id: build-container
         name: Build container image
-        uses: docker://gcr.io/kaniko-project/executor:debug 
+        uses: docker://gcr.io/kaniko-project/executor:debug
         run: |
-          /kaniko/executor --context $CLOUDBEES_WORKSPACE --build-arg USER=cbp-qa-automation,TOKEN=${{ secrets.GH_SECURITY_PAT }} --dockerfile $CLOUDBEES_WORKSPACE/Dockerfile --tar-path $CLOUDBEES_WORKSPACE/container-image.tar --no-push
-      - id: upload-binary
-        name: Upload binary using action
-        uses: cloudbees-io/asset-chain-utils-preprod/upload-binary@v1
+          /kaniko/executor \
+            --context $CLOUDBEES_WORKSPACE \
+            --build-arg USER=cbp,TOKEN=${{ secrets.GH_SECURITY_PAT }} \
+            --dockerfile $CLOUDBEES_WORKSPACE/Dockerfile \
+            --tar-path $CLOUDBEES_WORKSPACE/container-image.tar \
+            --no-push
+
+      - id: register-artifact
+        name: Register the artifact
+        uses: cloudbees-io/register-build-artifact@v2
         with:
-          file-path: container-image.tar
-          file-type: BINARY_CONTAINER
-          debug: "true" 
+          name: cp-go-repo
+          version: 0.1
+          url: 020229604682.dkr.ecr.us-east-1.amazonaws.com/throwaway/actions/chitra-image1:0.1
+
       - name: Print output parameter artifact ID
         uses: docker://alpine:latest
         shell: sh
