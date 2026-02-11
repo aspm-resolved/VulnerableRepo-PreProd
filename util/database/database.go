@@ -62,6 +62,6 @@ func CheckDatabase() (bool, error) {
 	if result == nil {
 		return false, err
 	}
-	log.Println(result)
+
 	return true, nil
 }
