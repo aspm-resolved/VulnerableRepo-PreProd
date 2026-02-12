@@ -26,7 +26,7 @@ func (self *Self) SetSession(w http.ResponseWriter, r *http.Request, data map[st
 	session.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   3600,
-		HttpOnly: false, //set to false for xss :)
+		HttpOnly: true, //set to false for xss :)
 	}
 
 	session.Values["govwa_session"] = true
