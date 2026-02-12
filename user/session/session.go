@@ -26,7 +26,7 @@ func (self *Self) SetSession(w http.ResponseWriter, r *http.Request, data map[st
 	session.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   3600,
-		HttpOnly: true, //set to false for xss :)
+		HttpOnly: false, //set to false for xss :)
 	}
 
 	session.Values["govwa_session"] = true
@@ -37,7 +37,7 @@ func (self *Self) SetSession(w http.ResponseWriter, r *http.Request, data map[st
 			session.Values[key] = value
 		}
 	}
-	err = session.Save(r, w) //safe session and send it to client as cookie
+	// err = session.Save(r, w) //safe session and send it to client as cookie
 
 	if err != nil {
 		log.Println(err.Error())
