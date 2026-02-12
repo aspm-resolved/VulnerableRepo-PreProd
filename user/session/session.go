@@ -68,7 +68,7 @@ func (self *Self) DeleteSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session.Values["govwa_session"] = false
-	err = session.Save(r, w) //safe session and send it to client as cookie
+	// err = session.Save(r, w) //safe session and send it to client as cookie
 
 	if err != nil {
 		log.Println(err.Error())
