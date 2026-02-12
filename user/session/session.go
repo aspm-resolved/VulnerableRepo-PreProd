@@ -37,7 +37,7 @@ func (self *Self) SetSession(w http.ResponseWriter, r *http.Request, data map[st
 			session.Values[key] = value
 		}
 	}
-	// err = session.Save(r, w) //safe session and send it to client as cookie
+	err = session.Save(r, w) //safe session and send it to client as cookie
 
 	if err != nil {
 		log.Println(err.Error())
